@@ -11,10 +11,18 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
-
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
+if (!process.env.MONGO_URI) {
+    console.error("❌ MONGO_URI is not set. Create a .env file with MONGO_URI (MongoDB connection string). ");
+} else {
+    console.log("MongoDB URI loaded");
+    mongoose.connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("MongoDB Atlas Connected");
+    })
+    .catch((err) => {
+        console.error("Mongo Error:", err);
+    });
+}
 
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
